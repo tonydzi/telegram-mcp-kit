@@ -62,6 +62,12 @@ Part of the connector kit series by Palo Alto AI Research Lab — see also [`wha
 
 ---
 
+
+> **Publishing your own internals?** This repo was sanitized for release with
+> [`oss-publish`](https://github.com/tonydzi/oss-publish) — our substitution pipeline:
+> personal data is replaced by plausible fakes of the same shape (never `<REDACTED>`),
+> and a fail-closed gate re-scans the whole tree before the push. Free, MIT.
+
 <!--ecosystem-map:start-->
 
 ## 🧩 One piece of a working system
