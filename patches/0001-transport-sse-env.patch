@@ -1,0 +1,23 @@
+diff --git a/telegram_mcp/runner.py b/telegram_mcp/runner.py
+index c203d86..444fbf3 100644
+--- a/telegram_mcp/runner.py
++++ b/telegram_mcp/runner.py
+@@ -51,8 +51,16 @@ async def _main() -> None:
+         warm_task = asyncio.create_task(_warm_caches())
+ 
+         print(f"Telegram client(s) started ({labels}). Running MCP server...", file=sys.stderr)
+-        # Use the asynchronous entrypoint instead of mcp.run()
+-        await mcp.run_stdio_async()
++        # Транспорт выбирается окружением (MCP-диета 01.08: один SSE-сервер на машину
++        # вместо копии на каждую сессию). Дефолт = stdio, поведение без env не меняется.
++        import os as _os
++        if _os.environ.get("MCP_TRANSPORT", "stdio").lower() == "sse":
++            mcp.settings.host = _os.environ.get("MCP_HOST", "127.0.0.1")
++            mcp.settings.port = int(_os.environ.get("MCP_PORT", "8765"))
++            print(f"Transport: SSE on {mcp.settings.host}:{mcp.settings.port}", file=sys.stderr)
++            await mcp.run_sse_async()
++        else:
++            await mcp.run_stdio_async()
+     except Exception as e:
+         print(f"Error starting client: {e}", file=sys.stderr)
+         if isinstance(e, sqlite3.OperationalError) and "database is locked" in str(e):
