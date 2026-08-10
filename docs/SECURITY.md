@@ -15,6 +15,7 @@ A user-account (MTProto) MCP server is **your entire Telegram**: every chat you 
 3. **Bind the daemon to localhost** (`MCP_HOST=127.0.0.1`). Never expose the port to the network; if you must, put an authenticated reverse proxy in front.
 4. **Separate account** for the assistant if your threat model demands it — a second Telegram identity that is a member only of the chats the assistant needs (the multi-account patch supports this natively).
 5. Full-disk encryption on any machine holding the config (the string sits there in plain text).
+6. Environment variables are visible to any process that can enumerate your processes (e.g. `Get-CimInstance Win32_Process` on Windows shows command lines; `/proc/<pid>/environ` on Linux shows env). The session string in the daemon's env is only as private as your user account — don't run the daemon on shared machines.
 
 ## Prompt injection
 
