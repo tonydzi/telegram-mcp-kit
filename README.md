@@ -58,7 +58,7 @@ Patches and docs: Apache-2.0 (same as upstream `chigwell/telegram-mcp`). Upstrea
 
 ---
 
-Part of the connector kit series by Palo Alto AI Research Lab — see also [`whatsapp-mcp-kit`](https://github.com/tonydzi/whatsapp-mcp-kit) (published 2026-08-10: a live self-refreshing QR page that makes WhatsApp pairing actually work). Questions / broken step? Open an issue — we answer within 24h.
+Part of the connector kit series by Palo Alto AI Research Lab — see also [`whatsapp-mcp-kit`](https://github.com/tonydzi/whatsapp-mcp-kit) (published 2026-08-10: a live self-refreshing QR page that makes WhatsApp pairing actually work) and [`mcp-daemon-diet`](https://github.com/tonydzi/mcp-daemon-diet) (one shared MCP daemon per machine instead of a copy in every session - the daemon and watchdog referenced in this kit's `daemon/` folder, generalised to any MCP server). Questions / broken step? Open an issue — we answer within 24h.
 
 ---
 
