@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use telegram-mcp-kit in research or software, please cite it as below."
+title: "telegram-mcp-kit"
+type: software
+authors:
+  - family-names: Dziatkovskii
+    given-names: Anton
+    orcid: "https://orcid.org/0000-0001-7408-3054"
+    affiliation: "Palo Alto AI Research Lab"
+repository-code: "https://github.com/tonydzi/telegram-mcp-kit"
+url: "https://github.com/tonydzi/telegram-mcp-kit"
+license: Apache-2.0
+abstract: >-
+  A setup path, production patches and a gotcha list for connecting an MCP client (Claude
+  Code, Claude Desktop, Codex) to a personal Telegram account through the MTProto
+  user-account server chigwell/telegram-mcp. Ships a shared HTTP/SSE daemon transport
+  instead of one stdio copy per session, the tools daily agent work actually needs (dialog
+  and global message search, incremental polling, t.me link resolution, unread mentions,
+  media search), multi-account support, a Windows launcher and watchdog, and a security
+  page on what handing an assistant a user-account session really grants. Upstream code is
+  not vendored; the kit ships patches against it.
+keywords:
+  - mcp
+  - model-context-protocol
+  - telegram
+  - mtproto
+  - claude-code
+  - agent-tooling
