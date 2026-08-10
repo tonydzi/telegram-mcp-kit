@@ -73,6 +73,8 @@ demo — and it runs on its own: nothing here phones home to the rest.
 
 **See how the whole thing fits together → [SYSTEM.md](https://github.com/tonydzi/Palo-Alto-AI-Research-Lab/blob/main/SYSTEM.md)**
 
+Its closest neighbours in the **connectors** layer: [`whatsapp-mcp-kit`](https://github.com/tonydzi/whatsapp-mcp-kit)
+
 <!--ecosystem-map:end-->
 
 ## AI contributors
