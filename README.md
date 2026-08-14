@@ -110,3 +110,18 @@ This project is built by a human + AI team, and the git log says so: Claude writ
 the code, Codex and Grok review it, Gemini feeds the research. Each is credited on a commit
 **only if its output changed that commit's content** — no decorative credits. Lab-wide
 policy, one source for every repo: [AI-CONTRIBUTORS.md](https://github.com/tonydzi/.github/blob/main/AI-CONTRIBUTORS.md).
+
+<!-- CONTACT-FOOTER -->
+## About & contact
+
+Built and battle-tested at **Palo Alto AI Research Lab** — a fleet of Claude Code machines
+running 24/7 as a second brain and synthetic cofounder. This kit is our own Telegram setup,
+lifted out after it survived production, not written as a demo.
+
+Stuck on a step, or a gotcha here does not match what you hit? Tell us — a broken step
+report is worth more to this repo than a star.
+
+- 👤 Author: **Anton Dziatkovskii** — Telegram [@tonydzi](https://t.me/tonydzi) · WhatsApp [+1 341 222 9178](https://wa.me/13412229178) · X [@Tony_Stef_](https://x.com/Tony_Stef_)
+- 📣 Channels: [@ClawRus](https://t.me/ClawRus) (RU) · [@ClawEng](https://t.me/ClawEng) (EN)
+- 🌐 [palo-alto.ai](https://palo-alto.ai) · [Palo Alto AI Research Lab](https://github.com/tonydzi)
+- 🧪 **Engineers: want to test-drive this setup?** Message me — I hand out free starter seeds to engineers who test and report back.

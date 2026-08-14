@@ -8,8 +8,8 @@ index c203d86..444fbf3 100644
          print(f"Telegram client(s) started ({labels}). Running MCP server...", file=sys.stderr)
 -        # Use the asynchronous entrypoint instead of mcp.run()
 -        await mcp.run_stdio_async()
-+        # Транспорт выбирается окружением (MCP-диета 01.08: один SSE-сервер на машину
-+        # вместо копии на каждую сессию). Дефолт = stdio, поведение без env не меняется.
++        # Transport is picked by the environment: one shared SSE server per machine
++        # instead of a copy per session. Default stays stdio - no env, no change.
 +        import os as _os
 +        if _os.environ.get("MCP_TRANSPORT", "stdio").lower() == "sse":
 +            mcp.settings.host = _os.environ.get("MCP_HOST", "127.0.0.1")

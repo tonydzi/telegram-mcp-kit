@@ -360,8 +360,8 @@ index 1e5743d..e053098 100644
  
          try:
 +            # Basic (legacy) groups are Chat, not Channel: InviteToChannelRequest raises
-+            # "Cannot cast InputPeerChat to InputChannel" for them (grabli 2026-07-17/20,
-+            # group "04 Планёрки Альфа") -> use AddChatUserRequest per user instead.
++            # "Cannot cast InputPeerChat to InputChannel" for them (hit in production
++            # 2026-07-17/20 on a legacy group) -> use AddChatUserRequest per user instead.
 +            import telethon.tl.types as _t
 +            if isinstance(entity, _t.Chat):
 +                added = 0
