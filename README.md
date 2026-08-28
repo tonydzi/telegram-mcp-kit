@@ -2,7 +2,7 @@
 
 Connect Claude (Claude Code / Claude Desktop / Codex — any MCP client) to **your own Telegram account** so it can read your chats and send replies. This kit is everything we wish we had on day one: it took us several hours and many broken iterations to get a stable setup; with this kit it should take you ~15 minutes.
 
-Built and battle-tested at [Palo Alto AI Research Lab](https://github.com/tonydzi/Palo-Alto-AI-Research-Lab) — our Claude fleet reads and writes Telegram through exactly this setup, every day, across 5 machines.
+Built and battle-tested at [Palo Alto AI Research Lab](https://github.com/tonydzi/tonydzi) — our Claude fleet reads and writes Telegram through exactly this setup, every day, across 5 machines.
 
 ## What you get
 
