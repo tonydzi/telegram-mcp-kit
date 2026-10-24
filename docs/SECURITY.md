@@ -5,7 +5,7 @@ A user-account (MTProto) MCP server is **your entire Telegram**: every chat you 
 ## The session string
 
 - It is equivalent to a logged-in device **without** phone, password or 2FA.
-- Keep it only in the MCP server registration (env var). Never commit it, never paste it into a chat with any LLM, never put it in a folder that syncs to other machines or clouds.
+- Keep it in a protected machine-local secret store or private environment loaded by the single server. Client registrations contain its URL, not Telegram keys. Never commit it, never paste it into a chat with any LLM, never put it in a folder that syncs to other machines or clouds.
 - Revoke instantly at any time: Telegram → Settings → Devices / Active Sessions → terminate. Do this immediately if you suspect a leak, then generate a new one.
 
 ## Reduce blast radius
@@ -23,4 +23,4 @@ Messages your assistant READS are untrusted input. Someone can send you a messag
 
 ## ToS
 
-A userbot is formally against Telegram's terms. Read-mostly personal use is widespread and bans are rare but not zero. Throttle bulk operations, don't spam, and understand the risk is yours.
+Use only accounts and chats you are authorized to access. Review the current [Telegram API terms](https://core.telegram.org/api/terms) and applicable account restrictions before setup. Throttle bulk operations and do not spam. This kit gives no guarantee against restrictions.

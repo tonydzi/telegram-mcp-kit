@@ -2,7 +2,7 @@
 
 Why: each Claude session normally spawns its own stdio copy of the server. At ~10 parallel sessions we measured ~2.7 GB of duplicate Telegram clients on one laptop. One shared daemon fixes it.
 
-Requires [`patches/0001-transport-sse-env.patch`](../patches/0001-transport-sse-env.patch).
+**Historical SSE examples only.** New installations should use the [native HTTP runbook](../README.ru.md) and [both client configurations](../CONFIGURATION.md). Current upstream needs no old transport patch. These launchers target the historical patched source; inspect the selected source and do not assume `/sse` equals `/mcp`.
 
 ## Setup (Windows)
 
@@ -20,4 +20,4 @@ macOS/Linux: same pattern — launchd / `systemd --user` unit exporting `MCP_TRA
 
 - Bind to `127.0.0.1` only. The daemon is your logged-in Telegram; never expose the port.
 - A daemon restart breaks the SSE stream of every live session (they'll error on telegram calls until restarted). That's why the watchdog is deliberately conservative — read its header before "improving" it.
-- `git pull` from upstream can revert the local transport patch; the daemon then silently falls back to stdio and nothing listens on the port. Re-apply the patch after pulls.
+- Do not update the source underneath a live service. Pin the selected commit, inspect transport support and check historical patches before a controlled upgrade; never blindly reapply them.

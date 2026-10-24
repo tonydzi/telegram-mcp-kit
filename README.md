@@ -1,52 +1,27 @@
 # telegram-mcp-kit
 
-Connect Claude (Claude Code / Claude Desktop / Codex — any MCP client) to **your own Telegram account** so it can read your chats and send replies. This kit is everything we wish we had on day one: it took us several hours and many broken iterations to get a stable setup; with this kit it should take you ~15 minutes.
+Connect Claude (Claude Code / Claude Desktop / Codex — any MCP client) to **your own Telegram account** with a shared MCP service and a separate Telethon worker. It includes portable skills, prompts, setup and recovery instructions.
 
-Built and battle-tested at [Palo Alto AI Research Lab](https://github.com/tonydzi/tonydzi) — our Claude fleet reads and writes Telegram through exactly this setup, every day, across 5 machines.
+Built and battle-tested at [Palo Alto AI Research Lab](https://github.com/tonydzi/tonydzi) — our Claude fleet reads and writes Telegram in daily operations. Current upstream and historical local patches differ; verify the selected source rather than assuming parity.
 
-## What you get
+## Current setup: Claude Code + Codex, MCP + Telethon
 
-1. **A working setup path** on top of the excellent upstream server [`chigwell/telegram-mcp`](https://github.com/chigwell/telegram-mcp) (MTProto user-account, pure Python, no TDLib build pain).
-2. **[`PROMPT.md`](PROMPT.md)** — a copy-paste prompt you give to Claude Code or Codex, and it performs the whole installation for you, including the gotchas.
-3. **Patches** we run in production, pinned to upstream commit `a008ac2` (apply cleanly there; run `git checkout a008ac2` after cloning, or resolve conflicts yourself on a newer HEAD):
-   - [`patches/0001-transport-sse-env.patch`](patches/0001-transport-sse-env.patch) — run the server as **one shared HTTP/SSE daemon per machine** instead of a stdio copy per session. With 10+ parallel agent sessions the stdio model wasted us ~2.7 GB RAM on duplicate Telegram clients; one daemon fixes that. Opt-in via `MCP_TRANSPORT=sse` (+ `MCP_HOST`/`MCP_PORT`), default behavior unchanged. **Update:** current upstream HEAD now ships env-selectable transport natively — on latest upstream skip this patch and just set the env vars; the daemon + watchdog in this kit work the same.
-   - [`patches/0002-extra-tools-multiaccount.patch`](patches/0002-extra-tools-multiaccount.patch) — tools we found missing in daily agent work: `search_dialogs` (find private groups by title, not only @usernames), `search_messages_global`, `get_new_messages_since` (incremental polling for watchers), `resolve_message_link` (t.me link → message + context), `get_unread_mentions`, `find_media`, plus an `account:` parameter on tools for **multi-account** setups and an incoming-message watcher configured by env vars (`TELEGRAM_WATCH_CHATS`, `TELEGRAM_PRINCIPAL_IDS`).
-4. **[`daemon/`](daemon/)** — Windows launcher + watchdog for the shared daemon (auto-restart with evidence logging; a naive TCP-probe watchdog caused us worse outages than the crashes it "fixed" — see GOTCHAS).
-5. **[`docs/GOTCHAS.md`](docs/GOTCHAS.md)** — every trap we paid hours for, so you don't.
-6. **[`docs/SECURITY.md`](docs/SECURITY.md)** — a user-account MCP is your *whole* Telegram; read this before pasting a session string anywhere.
+Start with the maintained [complete runbook (Russian)](README.ru.md), [agent prompts](PROMPTS.ru.md), [HTTP configuration](CONFIGURATION.md), and [acceptance checks](VALIDATION.md). The portable [telegram-connect skill](skills/telegram-connect/SKILL.md) supports either agent and needs no private fleet infrastructure.
 
-## Quickstart (manual)
+**Security warning from upstream:** do not install `pip install telegram-mcp`, `uvx telegram-mcp`, or `uvx --from telegram-mcp`. That PyPI name is a different project. Clone only [chigwell/telegram-mcp](https://github.com/chigwell/telegram-mcp), verify origin and pin a full commit before using credentials.
 
-```powershell
-# 1. api_id / api_hash from https://my.telegram.org (API development tools)
+Two independent rails:
 
-# 2. clone + install (Windows shown; Linux/macOS identical minus paths)
-git clone https://github.com/chigwell/telegram-mcp.git C:\mcp\telegram-mcp
-cd C:\mcp\telegram-mcp
-uv sync
+1. A single local MCP server exposes streamable HTTP `/mcp` to both Claude Code and Codex.
+2. A separately authorized Telethon worker handles scripts without an LLM session. It must use a different machine-local auth key, never a copied MCP session.
 
-# 3. our patches (optional but recommended)
-git apply path\to\telegram-mcp-kit\patches\0001-transport-sse-env.patch
-git apply path\to\telegram-mcp-kit\patches\0002-extra-tools-multiaccount.patch
+Keep login, OTP, API hash and session output in a private local UI. The agent conversation and process argv are not secret stores. Begin with read-only tools; verify each harness and worker independently, then repeat after restart. A successful port probe is not Telegram authorization.
 
-# 4. one-time login -> session STRING (QR or phone+code)
-uv run session_string_generator.py
+### Historical patches and launchers
 
-# 5. register in Claude Code (stdio, simplest)
-claude mcp add telegram --scope user `
-  --env TELEGRAM_API_ID=YOUR_API_ID `
-  --env TELEGRAM_API_HASH=YOUR_API_HASH `
-  --env TELEGRAM_SESSION_STRING=YOUR_SESSION_STRING `
-  -- uv --directory C:\mcp\telegram-mcp run main.py C:\TG-Media
-```
+The files in `patches/` target historical upstream `a008ac2`. They are retained for users of that exact old source. Current upstream has native HTTP; do not apply transport or extra-tool patches blindly. Run `git apply --check` against the selected source and review schema differences first. Historical [daemon examples](daemon/README.md) use SSE, which must not be assumed compatible with a client's streamable HTTP transport.
 
-The trailing `C:\TG-Media` is the **allowed-roots positional argument** — without it every file tool (`download_media`, `send_file`) silently refuses to work. That one line cost us an evening.
-
-Running many parallel Claude sessions? Switch to the shared daemon: see [`daemon/README.md`](daemon/README.md).
-
-## The lazy path
-
-Open Claude Code, paste the contents of [`PROMPT.md`](PROMPT.md), answer two questions (api_id/api_hash), scan one QR. Done.
+This release updates setup instructions; fresh phone authorization and installation on all three operating systems have not been rerun. See [validation boundaries](VALIDATION.md).
 
 ## Why user-account (MTProto) and not a bot?
 
@@ -148,7 +123,7 @@ report is worth more to this repo than a star.
 
 - 👤 Author: **Anton Dziatkovskii** — Telegram [@tonydzi](https://t.me/tonydzi) · WhatsApp [+1 341 222 9178](https://wa.me/13412229178) · X [@Tony_Stef_](https://x.com/Tony_Stef_)
 - 📣 Channels: [@ClawRus](https://t.me/ClawRus) (RU) · [@ClawEng](https://t.me/ClawEng) (EN)
-- 🌐 [palo-alto.ai](https://palo-alto.ai) · [Palo Alto AI Research Lab](https://github.com/tonydzi)
+- 🌐 [Palo Alto AI Research Lab](https://github.com/tonydzi)
 - 🧪 **Engineers: want to test-drive this setup?** Message me — I hand out free starter seeds to engineers who test and report back.
 
 <!-- READ-WITH-AI:START (generated by read_with_ai.py - do not hand-edit) -->
