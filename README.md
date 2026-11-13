@@ -1,5 +1,83 @@
 # telegram-mcp-kit
 
+Lets your AI assistant (Claude Code, Codex, any MCP client) read your own Telegram account, using a small local server that runs on your computer.
+
+**Who it's for:** people who want their AI to search and read their real Telegram chats, not a bot's empty inbox.
+**What you get:** Telegram tools inside your AI chat, for example "find what Anna wrote about the invoice", read-only to start.
+
+> **Security warning.** This logs in as YOU, so the saved login (a "session") is as powerful as your phone. Never paste your Telegram API hash, login code, 2FA password or session string into an AI chat, a command line, or Git. Never copy a session file to another computer. Never run `pip install telegram-mcp`: that name on PyPI is a different project. Use only `github.com/chigwell/telegram-mcp`.
+
+## Quick start
+1. Get your own Telegram API id and hash at [my.telegram.org/apps](https://my.telegram.org/apps). Keep them private.
+2. Give your agent the prompt below. It installs and starts the server and asks you for the login code. Type the code only into the private local login window.
+3. Start with read-only tools. Turn on sending later, only if you want it.
+
+**Done when:** your AI client lists Telegram tools and a cheap check (`get_me`) shows your own name.
+
+> Want an AI agent to do it for you? Paste this to Claude Code / Codex / Cursor:
+> "Read the 'For AI agents' section of https://github.com/tonydzi/telegram-mcp-kit and set it up for me."
+
+## For AI agents
+
+### Preconditions
+- Python 3.10 or newer (the upstream requirement), Git, optionally `uv`. On Windows make sure `python` is not the Microsoft Store stub.
+- A Claude Code and/or Codex install. The server speaks streamable HTTP at `http://127.0.0.1:<FREE_PORT>/mcp`.
+- Ask the human for: Telegram API id and API hash (they get them at my.telegram.org/apps), their phone number, and the login code and 2FA password when Telegram asks. The human types these into a private local window only. Never ask for them in chat, never put them in argv, a repo, a synced folder, a screenshot or shell history.
+- Check first for an already working setup (running server, configured URL). Reuse it. Do not start a second owner of the same Telegram key.
+
+### Install
+The server is upstream `chigwell/telegram-mcp`. This repo ships docs, a skill and old patches, not the server.
+```bash
+git clone https://github.com/chigwell/telegram-mcp
+cd telegram-mcp
+git remote get-url origin        # must print https://github.com/chigwell/telegram-mcp
+git checkout e55d9c7a66a8eb0855debb268a4ed5b63749af2d   # commit this kit was checked against (24 Oct 2026)
+```
+Then create a separate virtualenv and install dependencies the way that commit documents (upstream ships `uv.lock`, `poetry.lock`, `requirements.txt` and its own README: follow them, do not guess).
+
+Install the portable skill from this repo, only the directory `skills/telegram-connect/`:
+```bash
+git clone https://github.com/tonydzi/telegram-mcp-kit
+mkdir -p ~/.claude/skills/telegram-connect     # for Codex: ~/.codex/skills/telegram-connect
+cp telegram-mcp-kit/skills/telegram-connect/SKILL.md ~/.claude/skills/telegram-connect/SKILL.md
+```
+If `telegram-connect` already exists, compare and back it up before overwriting.
+
+The `patches/` folder targets an old upstream commit (`a008ac2`). Do not apply it to current upstream.
+
+### Configure
+1. Private server settings (a `.env` kept private and outside synced folders). First run values from `CONFIGURATION.md`:
+```dotenv
+MCP_TRANSPORT=http
+MCP_HOST=127.0.0.1
+MCP_PORT=<FREE_PORT>
+TELEGRAM_EXPOSED_TOOLS=read-only
+TELEGRAM_TRANSCRIBE=off
+```
+Plus the human's own `TELEGRAM_API_ID`, `TELEGRAM_API_HASH` and session, named by that commit's `.env.example`.
+2. Session: use upstream `session_string_generator.py` with `--qr` or `--phone` (check `--help` at that commit). The human completes login in a private local window. Prefer a file session for a long-running server.
+3. Run exactly one server process: `<VENV_PYTHON> <CHECKOUT>/main.py <PRIVATE_MEDIA_DIRECTORY>`. Give it a narrow media folder, never the whole home directory.
+4. Register the same URL in each client. Check `claude mcp add --help` and `codex mcp add --help` first. Documented forms: `claude mcp add --transport http telegram http://127.0.0.1:<FREE_PORT>/mcp`, and in Codex config `[mcp_servers.telegram]` with `url = "http://127.0.0.1:<FREE_PORT>/mcp"`. Back up the config, edit only the telegram entry.
+5. A scripts-without-LLM worker (Telethon) needs its own, different session key. Details in `README.ru.md` and `VALIDATION.md`.
+
+### Verify
+In each client (Claude Code, and separately Codex), call the Telegram tool `get_me` (or `list_accounts`). Expected: it returns the human's own account, not an error. A listening port or a running process is not proof. Then restart and repeat: it must pass without a new login. The full acceptance table is in `VALIDATION.md`. Static check you can run without any login: `ls ~/.claude/skills/telegram-connect/SKILL.md`, and the first lines must show `name: telegram-connect`.
+
+### Uninstall / rollback
+- Remove only the `telegram` entry from the client configs (restore your backup).
+- Stop the one server process. Delete `~/.claude/skills/telegram-connect/` (and the Codex copy) if you added it.
+- To end the login for good, the human terminates the session in Telegram: Settings, Devices. Then delete the session file.
+
+### Rules for the agent
+- Never display, log, echo or commit the API hash, OTP, 2FA password or session string. Do not pass them as command arguments.
+- Never copy an authorized `.session` file or session string between machines. A second IP using the same key can get it revoked (`AUTH_KEY_DUPLICATED`). Each machine and each rail logs in on its own.
+- Do not install `telegram-mcp` from PyPI. Do not run two MCP servers on one key. Do not mix `/sse` and `/mcp`.
+- Keep the server bound to `127.0.0.1`. Do not disable Host or Origin checks. The pinned upstream has no built-in bearer auth, so other local processes can reach it: use a trusted single-user machine only.
+- Read-only first. Enable send tools only if the human says so, and test with a message to their own Saved Messages. After a send timeout, check the chat before retrying.
+- Do not message anyone, join or leave chats, or delete anything unless the human asked for exactly that.
+
+## Details
+
 Connect Claude (Claude Code / Claude Desktop / Codex — any MCP client) to **your own Telegram account** with a shared MCP service and a separate Telethon worker. It includes portable skills, prompts, setup and recovery instructions.
 
 Built and battle-tested at [Palo Alto AI Research Lab](https://github.com/tonydzi/tonydzi) — our Claude fleet reads and writes Telegram in daily operations. Current upstream and historical local patches differ; verify the selected source rather than assuming parity.
