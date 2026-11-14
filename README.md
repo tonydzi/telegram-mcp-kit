@@ -41,6 +41,12 @@ git clone https://github.com/tonydzi/telegram-mcp-kit
 mkdir -p ~/.claude/skills/telegram-connect     # for Codex: ~/.codex/skills/telegram-connect
 cp telegram-mcp-kit/skills/telegram-connect/SKILL.md ~/.claude/skills/telegram-connect/SKILL.md
 ```
+Windows PowerShell:
+```powershell
+git clone https://github.com/tonydzi/telegram-mcp-kit
+New-Item -ItemType Directory -Force "$HOME\.claude\skills\telegram-connect"
+Copy-Item telegram-mcp-kit\skills\telegram-connect\SKILL.md "$HOME\.claude\skills\telegram-connect\SKILL.md"
+```
 If `telegram-connect` already exists, compare and back it up before overwriting.
 
 The `patches/` folder targets an old upstream commit (`a008ac2`). Do not apply it to current upstream.
@@ -61,7 +67,7 @@ Plus the human's own `TELEGRAM_API_ID`, `TELEGRAM_API_HASH` and session, named b
 5. A scripts-without-LLM worker (Telethon) needs its own, different session key. Details in `README.ru.md` and `VALIDATION.md`.
 
 ### Verify
-In each client (Claude Code, and separately Codex), call the Telegram tool `get_me` (or `list_accounts`). Expected: it returns the human's own account, not an error. A listening port or a running process is not proof. Then restart and repeat: it must pass without a new login. The full acceptance table is in `VALIDATION.md`. Static check you can run without any login: `ls ~/.claude/skills/telegram-connect/SKILL.md`, and the first lines must show `name: telegram-connect`.
+In each client (Claude Code, and separately Codex), call the Telegram tool `get_me` (or `list_accounts`). Expected: it returns the human's own account, not an error. A listening port or a running process is not proof. Then restart and repeat: it must pass without a new login. The full acceptance table is in `VALIDATION.md`. Static check you can run without any login: `head -5 ~/.claude/skills/telegram-connect/SKILL.md` (PowerShell: `Get-Content "$HOME\.claude\skills\telegram-connect\SKILL.md" -TotalCount 5`); the first lines must show `name: telegram-connect`. This only proves the skill file is in place, not that the server works: only the `get_me` call above proves that.
 
 ### Uninstall / rollback
 - Remove only the `telegram` entry from the client configs (restore your backup).
