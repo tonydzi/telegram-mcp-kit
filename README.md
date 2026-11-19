@@ -49,7 +49,7 @@ Copy-Item telegram-mcp-kit\skills\telegram-connect\SKILL.md "$HOME\.claude\skill
 ```
 If `telegram-connect` already exists, compare and back it up before overwriting.
 
-The `patches/` folder targets an old upstream commit (`a008ac2`). Do not apply it to current upstream.
+The `patches/` folder targets an old upstream commit (`a008ac2`). Do not apply it to current upstream. One exception: `0002-extra-tools-multiaccount.upstream-5960872.patch` is the same extra tools (`chats.py` and `messages.py` only) rebuilt for upstream commit `5960872`; check it with `git apply --check` on that exact commit.
 
 ### Configure
 1. Private server settings (a `.env` kept private and outside synced folders). First run values from `CONFIGURATION.md`:
