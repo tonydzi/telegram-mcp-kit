@@ -14,6 +14,21 @@ Lets your AI assistant (Claude Code, Codex, any MCP client) read your own Telegr
 
 **Done when:** your AI client lists Telegram tools and a cheap check (`get_me`) shows your own name.
 
+The setup skills install with one command. Claude Code, as a plugin:
+
+```
+/plugin marketplace add tonydzi/telegram-mcp-kit
+/plugin install telegram-mcp-kit@telegram-mcp-kit
+```
+
+Any agent that reads Agent Skills (Claude Code, Codex, Cursor, Gemini CLI):
+
+```bash
+npx skills add tonydzi/telegram-mcp-kit
+```
+
+This installs the skills only. The Telegram MCP server itself is still installed by the steps in this README.
+
 > Want an AI agent to do it for you? Paste this to Claude Code / Codex / Cursor:
 > "Read the 'For AI agents' section of https://github.com/tonydzi/telegram-mcp-kit and set it up for me."
 

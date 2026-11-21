@@ -1,0 +1,23 @@
+{
+  "name": "telegram-mcp-kit",
+  "version": "2.0.0",
+  "description": "Setup and repair skills for connecting your own Telegram account to Claude Code and Codex: one shared loopback MCP service, a separate Telethon worker, read-only first, per-rail verification.",
+  "author": {
+    "name": "Anton Dziatkovskii / Palo Alto AI Research Lab",
+    "url": "https://github.com/tonydzi"
+  },
+  "homepage": "https://github.com/tonydzi/telegram-mcp-kit",
+  "repository": "https://github.com/tonydzi/telegram-mcp-kit",
+  "license": "Apache-2.0",
+  "keywords": [
+    "telegram",
+    "mcp",
+    "telethon",
+    "agent-skills",
+    "claude-code",
+    "codex"
+  ],
+  "skills": [
+    "./skills/"
+  ]
+}
